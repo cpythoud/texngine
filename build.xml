@@ -34,14 +34,14 @@
 
     <target name="jar" description="Create file texngine-(version).jar" depends="cleanup,compile">
         <java classname="org.texngine.Version" classpath="${build.classes}" outputproperty="jar.version" />
-        <jar destfile="${build.dir}/texngine-${jar.version}.jar" basedir="${build.classes}" includes="org/dbbeans/util/**/*" />
+        <jar destfile="${build.dir}/texngine-${jar.version}.jar" basedir="${build.classes}" includes="org/texngine/**/*" />
     </target>
 
     <target name="jar-src" description="Create file texngine-(version).jar" depends="cleanup,compile">
         <java classname="org.texngine.Version" classpath="${build.classes}" outputproperty="jar.version" />
         <jar destfile="${build.dir}/texngine-${jar.version}.jar">
-            <fileset dir="${build.classes}" includes="org/dbbeans/util/**/*"/>
-            <fileset dir="${src-ascii.dir}" includes="org/dbbeans/util/**/*"/>
+            <fileset dir="${build.classes}" includes="org/texngine/**/*"/>
+            <fileset dir="${src-ascii.dir}" includes="org/texngine/**/*"/>
         </jar>
     </target>
 
