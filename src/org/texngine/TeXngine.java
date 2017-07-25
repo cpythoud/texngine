@@ -30,8 +30,6 @@ public class TeXngine {
 
         private final List<String> commandAndarguments = new ArrayList<>();
 
-        private ErrorProcessor errorProcessor = null;
-
         private CommandFactory(final TeXngine texngine) {
             this.texngine = texngine;
         }
@@ -50,14 +48,8 @@ public class TeXngine {
             return this;
         }
 
-        public CommandFactory setErrorProcessor(final ErrorProcessor errorProcessor) {
-            this.errorProcessor = errorProcessor;
-
-            return this;
-        }
-
         public TeXCommand create() {
-            return new TeXCommand(texngine, errorProcessor, commandAndarguments);
+            return new TeXCommand(texngine, commandAndarguments);
         }
     }
 }

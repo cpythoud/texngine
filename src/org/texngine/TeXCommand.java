@@ -1,9 +1,12 @@
 package org.texngine;
 
+import org.dbbeans.util.Files;
+
 import java.io.File;
 import java.io.IOException;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class TeXCommand {
@@ -11,28 +14,27 @@ public class TeXCommand {
     private static final String STD_OUT_LOG_FILE = "texngine.log";
 
     private final TeXngine teXngine;
-    private final ErrorProcessor errorProcessor;
     private final List<String> commandAndarguments = new ArrayList<>();
 
-    TeXCommand(final TeXngine teXngine, final ErrorProcessor errorProcessor, final List<String> commandAndarguments) {
+    TeXCommand(final TeXngine teXngine, final List<String> commandAndarguments) {
         this.teXngine = teXngine;
-        this.errorProcessor = errorProcessor;
         this.commandAndarguments.addAll(commandAndarguments);
     }
 
     public void execute(final String subDirectory) {
-        execute(1, subDirectory, null, null);
+        execute(1, subDirectory, null, null, null);
     }
 
     public void execute(final int passes, final String subDirectory) {
-        execute(passes, subDirectory, null, null);
+        execute(passes, subDirectory, null, null, null);
     }
 
     public void execute(
             final int passes,
             final String subDirectory,
             final PreProcessor preProcessor,
-            final PostProcessor postProcessor)
+            final PostProcessor postProcessor,
+            final ErrorProcessor errorProcessor)
     {
         if (preProcessor != null)
             preProcessor.doPreProcessing();
@@ -69,7 +71,15 @@ public class TeXCommand {
             throw new ProcessingError(intex); // TODO: must be integrated into thread management later
         }
 
-        if (postProcessor != null)
-            postProcessor.doPostProcessing();  // TODO: include error management here
+        final String logFileContent = Files.read(logFile);
+        if (containsErrors(logFileContent)) {
+            if (errorProcessor != null)
+                errorProcessor.processCompilationErrors(logFileContent);
+        } else if (postProcessor != null)
+            postProcessor.doPostProcessing();
+    }
+
+    private boolean containsErrors(final String logFileContent) {
+        return Arrays.stream(logFileContent.split("\n")).anyMatch(line -> line.startsWith("!"));
     }
 }
