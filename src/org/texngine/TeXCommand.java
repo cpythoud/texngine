@@ -80,6 +80,7 @@ public class TeXCommand {
     }
 
     private boolean containsErrors(final String logFileContent) {
-        return Arrays.stream(logFileContent.split("\n")).anyMatch(line -> line.startsWith("!"));
+        return Arrays.stream(logFileContent.split("\n"))
+                .anyMatch(line -> (line.startsWith("!") || line.startsWith("quiting: ")));
     }
 }
