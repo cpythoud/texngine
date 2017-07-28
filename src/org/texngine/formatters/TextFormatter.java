@@ -2,7 +2,7 @@ package org.texngine.formatters;
 
 import org.dbbeans.util.Strings;
 
-public class TextSpaceFormatter {
+public class TextFormatter {
 
     public static String processLineFeeds(final String source, final String doubleLFReplacement) {
         final String[] lines = source.split("\n");
