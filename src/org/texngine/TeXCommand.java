@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class TeXCommand {
+public class TeXCommand implements Runnable {
 
     private static final String STD_OUT_LOG_FILE = "texngine.log";
 
@@ -20,6 +20,12 @@ public class TeXCommand {
         this.teXngine = teXngine;
         this.commandAndarguments.addAll(commandAndarguments);
     }
+
+    private int passes = 0;
+    private String subDirectory;
+    private PreProcessor preProcessor;
+    private PostProcessor postProcessor;
+    private ErrorProcessor errorProcessor;
 
     public void execute(final String subDirectory) {
         execute(1, subDirectory, null, null, null);
@@ -36,6 +42,20 @@ public class TeXCommand {
             final PostProcessor postProcessor,
             final ErrorProcessor errorProcessor)
     {
+        this.passes = passes;
+        this.subDirectory = subDirectory;
+        this.preProcessor = preProcessor;
+        this.postProcessor = postProcessor;
+        this.errorProcessor = errorProcessor;
+
+        teXngine.execute(this);
+    }
+
+    @Override
+    public void run() {
+        if (passes == 0)
+            throw new IllegalStateException("Command has not been passed any parameter");
+
         if (preProcessor != null)
             preProcessor.doPreProcessing();
 
@@ -77,6 +97,8 @@ public class TeXCommand {
                 errorProcessor.processCompilationErrors(logFileContent);
         } else if (postProcessor != null)
             postProcessor.doPostProcessing();
+
+        passes = 0;
     }
 
     private boolean containsErrors(final String logFileContent) {

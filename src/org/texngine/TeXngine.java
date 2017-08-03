@@ -6,15 +6,33 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
+
 public class TeXngine {
 
     public final CommandFactory COMMAND_FACTORY = new CommandFactory(this);
 
     private final File baseDir;
+    private final ThreadPoolExecutor executor;
 
-    // TODO: replace with factory to setup multithreading environment
-    public TeXngine(final String baseDirPath) {
+    public TeXngine(final String baseDirPath, final int threadCount) {
         baseDir = new File(baseDirPath);
+        executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(threadCount);
+    }
+
+    public void execute(final TeXCommand texCommand) {
+        executor.execute(texCommand);
+    }
+
+    public void shutdown() {
+        executor.shutdown();
+    }
+
+    @Override
+    public void finalize() {
+        if (!executor.isShutdown())
+            executor.shutdownNow();
     }
 
     public File getBaseDir() {
