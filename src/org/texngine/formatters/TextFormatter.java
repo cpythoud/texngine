@@ -33,8 +33,8 @@ public class TextFormatter {
         ESCAPE_CHARS_IN_COMMAND_ARGUMENTS = new HashMap<>();
 
         ESCAPE_CHARS_IN_COMMAND_ARGUMENTS.put("%", "\\\\%");
-        ESCAPE_CHARS_IN_COMMAND_ARGUMENTS.put("\\{", "\\\\{");
-        ESCAPE_CHARS_IN_COMMAND_ARGUMENTS.put("}", "\\\\}");
+        /*ESCAPE_CHARS_IN_COMMAND_ARGUMENTS.put("\\{", "\\\\{");
+        ESCAPE_CHARS_IN_COMMAND_ARGUMENTS.put("}", "\\\\}");*/
     }
 
     public static String escapeCharsInCommandArguments(final String source) {
