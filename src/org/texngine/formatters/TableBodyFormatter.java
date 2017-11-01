@@ -2,9 +2,12 @@ package org.texngine.formatters;
 
 import org.dbbeans.util.Strings;
 
+import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 public class TableBodyFormatter {
 
@@ -19,6 +22,8 @@ public class TableBodyFormatter {
     private final String endOfLineSeparator;
 
     private final List<List<String>> lines = new ArrayList<>();
+
+    private List<List<String>> sortedLines;
 
     public static TableBodyFormatter getFormatterWithLineSeparations(final int columns) {
         return new TableBodyFormatter(columns, COMMON_VERTICAL_SEPARATOR);
@@ -63,18 +68,26 @@ public class TableBodyFormatter {
         final List<String> line = new ArrayList<>();
         line.addAll(columnData);
         lines.add(line);
+
+        sortedLines = null;
     }
 
     public String print(final int tabCount) {
+        final List<List<String>> linesToPrint;
+        if (sortedLines == null)
+            linesToPrint = lines;
+        else
+            linesToPrint = sortedLines;
+
         if (tabCount < 0)
             throw new IllegalArgumentException("Tab number should be 0 or positive");
-        if (lines.size() == 0)
+        if (linesToPrint.size() == 0)
             throw new IllegalArgumentException("No line to print");
 
         final StringBuilder tableBody = new StringBuilder();
         final String tabs = Strings.repeatString("\t", tabCount);
 
-        lines.forEach(line -> {
+        linesToPrint.forEach(line -> {
             tableBody.append(tabs);
             int index = 0;
             for (String column: line) {
@@ -96,5 +109,49 @@ public class TableBodyFormatter {
     @Override
     public String toString() {
         return print(0);
+    }
+
+    public void sort(final int sortColumn) {
+        sort(sortColumn, null);
+    }
+
+    public void sort(final int sortColumn, final Locale locale) {
+        if (sortColumn < 1 || sortColumn > columns)
+            throw new IllegalArgumentException(
+                    "No column #" + sortColumn + ". Columns must be > 0 and < " + (columns + 1));
+
+        final List<SortingLine> sortingLines = new ArrayList<>();
+        lines.forEach(line ->
+                sortingLines.add(new SortingLine(line.get(sortColumn - 1), line, locale)));
+        Collections.sort(sortingLines);
+
+        final List<List<String>> sortedLines = new ArrayList<>();
+        sortingLines.forEach(sortingLine -> sortedLines.add(sortingLine.line));
+        this.sortedLines = sortedLines;
+    }
+
+    private static class SortingLine implements Comparable<SortingLine> {
+        private final String data;
+        private final List<String> line;
+
+        private final Collator collator;
+
+        SortingLine(final String data, final List<String> line, final Locale locale) {
+            this.data = data;
+            this.line = line;
+
+            if (locale == null)
+                collator = null;
+            else
+                collator = Collator.getInstance(locale);
+        }
+
+        @Override
+        public int compareTo(final SortingLine sortingLine) {
+            if (collator == null)
+                return data.compareTo(sortingLine.data);
+
+            return collator.compare(data, sortingLine.data);
+        }
     }
 }
