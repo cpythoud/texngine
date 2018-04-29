@@ -1,6 +1,7 @@
 package org.texngine;
 
 import org.dbbeans.util.Files;
+import org.dbbeans.util.Strings;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class TeXCommand implements Runnable {
+public class TeXCommand extends TeXPriorityTask {
 
     private static final String STD_OUT_LOG_FILE = "texngine.log";
 
@@ -60,8 +61,10 @@ public class TeXCommand implements Runnable {
             preProcessor.doPreProcessing();
 
         final ProcessBuilder processBuilder = new ProcessBuilder(commandAndarguments);
+        System.out.println("Arguments: " + Strings.concatWithSeparator(" ", commandAndarguments));
 
         final File executionDirectory = new File(teXngine.getBaseDir(), subDirectory);
+        System.out.println("Execution directory: " + executionDirectory.getPath());
         processBuilder.directory(executionDirectory);
 
         final File logFile = new File(executionDirectory, STD_OUT_LOG_FILE);
