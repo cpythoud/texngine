@@ -18,6 +18,8 @@ public class TeXngine {
     private final File baseDir;
     private final ThreadPoolExecutor executor;
 
+    private boolean debug = false;
+
     public TeXngine(final String baseDirPath, final int threadCount) {
         if (threadCount < 1)
             throw new IllegalArgumentException("There must be at least one thread available. Illegal value: " + threadCount);
@@ -26,8 +28,15 @@ public class TeXngine {
         executor = new ThreadPoolExecutor(1, threadCount, 1, TimeUnit.SECONDS, new PriorityBlockingQueue<>());
     }
 
+    public void setDebug(boolean debug) {
+        this.debug = debug;
+    }
+
     public void execute(final TeXCommand texCommand) {
-        executor.execute(texCommand);
+        if (debug)
+            texCommand.run();
+        else
+            executor.execute(texCommand);
     }
 
     public void shutdown() {
