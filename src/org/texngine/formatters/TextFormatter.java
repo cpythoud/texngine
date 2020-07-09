@@ -5,6 +5,7 @@ import org.dbbeans.util.Strings;
 import java.util.HashMap;
 import java.util.Map;
 
+@Deprecated
 public class TextFormatter {
 
     public static String processLineFeeds(final String source, final String doubleLFReplacement) {
