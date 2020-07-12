@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -16,7 +17,7 @@ public class TeXngine {
     public static final String BATCH_MODE_OPTION    = "-interaction=batchmode";
 
     private final File baseDir;
-    private final ThreadPoolExecutor executor;
+    private final ExecutorService executor;
 
     private boolean debug = false;
 
@@ -26,6 +27,11 @@ public class TeXngine {
 
         baseDir = new File(baseDirPath);
         executor = new ThreadPoolExecutor(1, threadCount, 1, TimeUnit.SECONDS, new PriorityBlockingQueue<>());
+    }
+
+    public TeXngine(final String baseDirPath, final ExecutorService executor) {
+        baseDir = new File(baseDirPath);
+        this.executor = executor;
     }
 
     public void setDebug(boolean debug) {
