@@ -1,16 +1,11 @@
 package org.texngine;
 
-import java.io.File;
-
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 public class TeXngineImpl implements TeXngine {
-
-    public static final String NON_STOP_MODE_OPTION = "-interaction=nonstopmode";
-    public static final String BATCH_MODE_OPTION    = "-interaction=batchmode";
 
     private final ExecutorService executor;
 

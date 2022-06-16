@@ -4,6 +4,9 @@ import java.util.concurrent.ExecutorService;
 
 public interface TeXngine {
 
+    String NON_STOP_MODE_OPTION = "-interaction=nonstopmode";
+    String BATCH_MODE_OPTION    = "-interaction=batchmode";
+
     static TeXngine create(int threadCount) {
         return new TeXngineImpl(threadCount);
     }
@@ -19,7 +22,7 @@ public interface TeXngine {
     void shutdown();
 
     default TeXCommandFactory getCommandFactory() {
-        return new TeXCommandFactoryImpl();
+        return new TeXCommandFactoryImpl(this);
     }
 
 }
