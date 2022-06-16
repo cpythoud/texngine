@@ -1,6 +1,6 @@
 package org.texngine.formatters;
 
-import org.dbbeans.util.Strings;
+import org.beanmaker.v2.util.Strings;
 
 import java.text.Collator;
 import java.util.ArrayList;
@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 public class TableBodyFormatter {
 
@@ -25,30 +26,30 @@ public class TableBodyFormatter {
 
     private List<List<String>> sortedLines;
 
-    public static TableBodyFormatter getFormatterWithLineSeparations(final int columns) {
+    public static TableBodyFormatter getFormatterWithLineSeparations(int columns) {
         return new TableBodyFormatter(columns, COMMON_VERTICAL_SEPARATOR);
     }
 
-    public TableBodyFormatter(final int columns)
+    public TableBodyFormatter(int columns)
     {
         this(columns, null, DEFAULT_HORIZONTAL_SEPARATOR, DEFAULT_END_OF_LINE_SEPARATOR);
     }
 
-    public TableBodyFormatter(final int columns, final String verticalSeparator)
+    public TableBodyFormatter(int columns, String verticalSeparator)
     {
         this(columns, verticalSeparator, DEFAULT_HORIZONTAL_SEPARATOR, DEFAULT_END_OF_LINE_SEPARATOR);
     }
 
-    public TableBodyFormatter(final int columns, final String verticalSeparator, final String horizontalSeparator)
+    public TableBodyFormatter(int columns, String verticalSeparator, String horizontalSeparator)
     {
         this(columns, verticalSeparator, horizontalSeparator, DEFAULT_END_OF_LINE_SEPARATOR);
     }
 
     public TableBodyFormatter(
-            final int columns,
-            final String verticalSeparator,
-            final String horizontalSeparator,
-            final String endOfLineSeparator)
+            int columns,
+            String verticalSeparator,
+            String horizontalSeparator,
+            String endOfLineSeparator)
     {
         this.columns = columns;
         this.verticalSeparator = verticalSeparator;
@@ -56,36 +57,32 @@ public class TableBodyFormatter {
         this.endOfLineSeparator = endOfLineSeparator;
     }
 
-    public void addLine(final String... columnData) {
+    public void addLine(String... columnData) {
         addLine(Arrays.asList(columnData));
     }
 
-    public void addLine(final List<String> columnData) {
+    public void addLine(List<String> columnData) {
         if (columnData.size() != columns)
             throw new IllegalArgumentException("Wrong number of elements: " + columnData.size()
                     + " for table with " + columns + " columns");
 
-        final List<String> line = new ArrayList<>();
-        line.addAll(columnData);
+        List<String> line = new ArrayList<>(columnData);
         lines.add(line);
 
         sortedLines = null;
     }
 
-    public String print(final int tabCount) {
-        final List<List<String>> linesToPrint;
-        if (sortedLines == null)
-            linesToPrint = lines;
-        else
-            linesToPrint = sortedLines;
+    public String print(int tabCount) {
+        List<List<String>> linesToPrint;
+        linesToPrint = Objects.requireNonNullElse(sortedLines, lines);
 
         if (tabCount < 0)
             throw new IllegalArgumentException("Tab number should be 0 or positive");
         if (linesToPrint.size() == 0)
             throw new IllegalArgumentException("No line to print");
 
-        final StringBuilder tableBody = new StringBuilder();
-        final String tabs = Strings.repeatString("\t", tabCount);
+        StringBuilder tableBody = new StringBuilder();
+        String tabs = Strings.repeatString("\t", tabCount);
 
         linesToPrint.forEach(line -> {
             tableBody.append(tabs);
@@ -111,21 +108,21 @@ public class TableBodyFormatter {
         return print(0);
     }
 
-    public void sort(final int sortColumn) {
+    public void sort(int sortColumn) {
         sort(sortColumn, null);
     }
 
-    public void sort(final int sortColumn, final Locale locale) {
+    public void sort(int sortColumn, Locale locale) {
         if (sortColumn < 1 || sortColumn > columns)
             throw new IllegalArgumentException(
                     "No column #" + sortColumn + ". Columns must be > 0 and < " + (columns + 1));
 
-        final List<SortingLine> sortingLines = new ArrayList<>();
+        List<SortingLine> sortingLines = new ArrayList<>();
         lines.forEach(line ->
                 sortingLines.add(new SortingLine(line.get(sortColumn - 1), line, locale)));
         Collections.sort(sortingLines);
 
-        final List<List<String>> sortedLines = new ArrayList<>();
+        List<List<String>> sortedLines = new ArrayList<>();
         sortingLines.forEach(sortingLine -> sortedLines.add(sortingLine.line));
         this.sortedLines = sortedLines;
     }
@@ -136,7 +133,7 @@ public class TableBodyFormatter {
 
         private final Collator collator;
 
-        SortingLine(final String data, final List<String> line, final Locale locale) {
+        SortingLine(String data, List<String> line, Locale locale) {
             this.data = data;
             this.line = line;
 
@@ -147,11 +144,12 @@ public class TableBodyFormatter {
         }
 
         @Override
-        public int compareTo(final SortingLine sortingLine) {
+        public int compareTo(SortingLine sortingLine) {
             if (collator == null)
                 return data.compareTo(sortingLine.data);
 
             return collator.compare(data, sortingLine.data);
         }
     }
+
 }

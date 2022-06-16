@@ -1,15 +1,15 @@
 package org.texngine.formatters;
 
-import org.dbbeans.util.Strings;
+import org.beanmaker.v2.util.Strings;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class TextUtil {
 
-    public static String doubleLineFeeds(final String source, final String doubleLFReplacement) {
-        final String[] lines = source.split("\n");
-        final StringBuilder processedSource = new StringBuilder();
+    public static String doubleLineFeeds(String source, String doubleLFReplacement) {
+        String[] lines = source.split("\n");
+        StringBuilder processedSource = new StringBuilder();
 
         boolean prevLineEmpty = false;
         for (String line: lines) {
@@ -43,8 +43,9 @@ public class TextUtil {
         ESCAPE_CHARS.put("^", "\\textasciicircum");
     }
 
-    public static String escapeChars(final String source) {
+    public static String escapeChars(String source) {
         String noBackSlash = Strings.replace(source, "\\", "\\\\");
         return Strings.replaceMany(noBackSlash, ESCAPE_CHARS);
     }
+
 }

@@ -10,22 +10,22 @@ abstract class CommonMacroFormatter {
     final String optionalParameter;
     final List<String> parameters;
 
-    public CommonMacroFormatter(final String name, final String optionalParameter, final String... parameters) {
+    public CommonMacroFormatter(String name, String optionalParameter, String... parameters) {
         this(name, optionalParameter, Arrays.asList(parameters));
     }
 
-    public CommonMacroFormatter(final String name, final String optionalParameter, final List<String> parameters) {
+    public CommonMacroFormatter(String name, String optionalParameter, List<String> parameters) {
         this.name = name;
         this.optionalParameter = optionalParameter;
         this.parameters = new ArrayList<>();
         this.parameters.addAll(parameters);
     }
 
-    public abstract String print(final int tabs);
-    public abstract String println(final int tabs);
+    public abstract String print(int tabs);
+    public abstract String println(int tabs);
 
     String formatParameters() {
-        final StringBuilder buf = new StringBuilder();
+        StringBuilder buf = new StringBuilder();
 
         if (optionalParameter != null)
             buf.append("[").append(optionalParameter).append("]");
@@ -34,4 +34,5 @@ abstract class CommonMacroFormatter {
 
         return buf.toString();
     }
+
 }

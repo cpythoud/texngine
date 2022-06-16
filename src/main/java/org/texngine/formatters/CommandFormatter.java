@@ -1,16 +1,16 @@
 package org.texngine.formatters;
 
-import org.dbbeans.util.Strings;
+import org.beanmaker.v2.util.Strings;
 
 import java.util.List;
 
 public class CommandFormatter extends CommonMacroFormatter {
 
-    public CommandFormatter(final String name, final String optionalParameter, final String... parameters) {
+    public CommandFormatter(String name, String optionalParameter, String... parameters) {
         super(name, optionalParameter, parameters);
     }
 
-    public CommandFormatter(final String name, final String optionalParameter, final List<String> parameters) {
+    public CommandFormatter(String name, String optionalParameter, List<String> parameters) {
         super(name, optionalParameter, parameters);
     }
 
@@ -20,12 +20,13 @@ public class CommandFormatter extends CommonMacroFormatter {
     }
 
     @Override
-    public String print(final int tabs) {
-        return Strings.repeatString("\t", tabs) + toString();
+    public String print(int tabs) {
+        return Strings.repeatString("\t", tabs) + this;
     }
 
     @Override
-    public String println(final int tabs) {
+    public String println(int tabs) {
         return print(tabs) + "\n";
     }
+
 }

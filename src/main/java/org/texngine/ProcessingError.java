@@ -9,4 +9,5 @@ public class ProcessingError extends RuntimeException {
     public ProcessingError(final Throwable throwable) {
         super(throwable);
     }
+
 }

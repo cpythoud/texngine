@@ -21,7 +21,7 @@ public class TeXngine {
 
     private boolean debug = false;
 
-    public TeXngine(final String baseDirPath, final int threadCount) {
+    public TeXngine(String baseDirPath, int threadCount) {
         if (threadCount < 1)
             throw new IllegalArgumentException("There must be at least one thread available. Illegal value: " + threadCount);
 
@@ -29,7 +29,7 @@ public class TeXngine {
         executor = new ThreadPoolExecutor(1, threadCount, 1, TimeUnit.SECONDS, new PriorityBlockingQueue<>());
     }
 
-    public TeXngine(final String baseDirPath, final ExecutorService executor) {
+    public TeXngine(String baseDirPath, ExecutorService executor) {
         baseDir = new File(baseDirPath);
         this.executor = executor;
     }
@@ -38,7 +38,7 @@ public class TeXngine {
         this.debug = debug;
     }
 
-    public void execute(final TeXCommand texCommand) {
+    public void execute(TeXCommand texCommand) {
         if (debug)
             texCommand.run();
         else
@@ -71,14 +71,14 @@ public class TeXngine {
 
         private CommandFactory() { }
 
-        public CommandFactory setCommandAndarguments(final String... commandAndarguments) {
+        public CommandFactory setCommandAndarguments(String... commandAndarguments) {
             this.commandAndarguments.clear();
             this.commandAndarguments.addAll(Arrays.asList(commandAndarguments));
 
             return this;
         }
 
-        public CommandFactory setCommandAndarguments(final List<String> commandAndarguments) {
+        public CommandFactory setCommandAndarguments(List<String> commandAndarguments) {
             this.commandAndarguments.clear();
             this.commandAndarguments.addAll(commandAndarguments);
 
@@ -97,4 +97,5 @@ public class TeXngine {
             return teXCommand;
         }
     }
+
 }

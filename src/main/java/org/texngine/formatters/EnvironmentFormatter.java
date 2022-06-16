@@ -1,6 +1,6 @@
 package org.texngine.formatters;
 
-import org.dbbeans.util.Strings;
+import org.beanmaker.v2.util.Strings;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,11 +9,11 @@ public class EnvironmentFormatter extends CommonMacroFormatter {
 
     private final List<CommonMacroFormatter> content = new ArrayList<>();
 
-    public EnvironmentFormatter(final String name, final String optionalParameter, final String... parameters) {
+    public EnvironmentFormatter(String name, String optionalParameter, String... parameters) {
         super(name, optionalParameter, parameters);
     }
 
-    public EnvironmentFormatter(final String name, final String optionalParameter, final List<String> parameters) {
+    public EnvironmentFormatter(String name, String optionalParameter, List<String> parameters) {
         super(name, optionalParameter, parameters);
     }
 
@@ -21,7 +21,7 @@ public class EnvironmentFormatter extends CommonMacroFormatter {
         content.clear();
     }
 
-    public void addContent(final CommonMacroFormatter contentPiece) {
+    public void addContent(CommonMacroFormatter contentPiece) {
         content.add(contentPiece);
     }
 
@@ -31,13 +31,13 @@ public class EnvironmentFormatter extends CommonMacroFormatter {
     }
 
     @Override
-    public String print(final int tabs) {
+    public String print(int tabs) {
         return println(tabs);
     }
 
     @Override
-    public String println(final int tabs) {
-        final StringBuilder buf = new StringBuilder();
+    public String println(int tabs) {
+        StringBuilder buf = new StringBuilder();
 
         buf.append(Strings.repeatString("\t", tabs))
                 .append("\\begin{")
@@ -55,4 +55,5 @@ public class EnvironmentFormatter extends CommonMacroFormatter {
 
         return buf.toString();
     }
+
 }

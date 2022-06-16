@@ -1,10 +1,11 @@
 package org.texngine;
 
-import org.dbbeans.util.Files;
-import org.dbbeans.util.Strings;
+import org.beanmaker.v2.util.Strings;
 
 import java.io.File;
 import java.io.IOException;
+
+import java.nio.file.Files;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,7 +18,7 @@ public class TeXCommand extends TeXPriorityTask {
     private final TeXngine teXngine;
     private final List<String> commandAndarguments = new ArrayList<>();
 
-    TeXCommand(final TeXngine teXngine, final List<String> commandAndarguments) {
+    TeXCommand(TeXngine teXngine, List<String> commandAndarguments) {
         this.teXngine = teXngine;
         this.commandAndarguments.addAll(commandAndarguments);
     }
@@ -28,20 +29,20 @@ public class TeXCommand extends TeXPriorityTask {
     private PostProcessor postProcessor;
     private ErrorProcessor errorProcessor;
 
-    public void execute(final String subDirectory) {
+    public void execute(String subDirectory) {
         execute(1, subDirectory, null, null, null);
     }
 
-    public void execute(final int passes, final String subDirectory) {
+    public void execute(int passes, String subDirectory) {
         execute(passes, subDirectory, null, null, null);
     }
 
     public void execute(
-            final int passes,
-            final String subDirectory,
-            final PreProcessor preProcessor,
-            final PostProcessor postProcessor,
-            final ErrorProcessor errorProcessor)
+            int passes,
+            String subDirectory,
+            PreProcessor preProcessor,
+            PostProcessor postProcessor,
+            ErrorProcessor errorProcessor)
     {
         this.passes = passes;
         this.subDirectory = subDirectory;
@@ -60,21 +61,21 @@ public class TeXCommand extends TeXPriorityTask {
         if (preProcessor != null)
             preProcessor.doPreProcessing();
 
-        final ProcessBuilder processBuilder = new ProcessBuilder(commandAndarguments);
+        ProcessBuilder processBuilder = new ProcessBuilder(commandAndarguments);
         System.out.println("Arguments: " + Strings.concatWithSeparator(" ", commandAndarguments));
 
-        final File executionDirectory = new File(teXngine.getBaseDir(), subDirectory);
+        File executionDirectory = new File(teXngine.getBaseDir(), subDirectory);
         System.out.println("Execution directory: " + executionDirectory.getPath());
         processBuilder.directory(executionDirectory);
 
-        final File logFile = new File(executionDirectory, STD_OUT_LOG_FILE);
+        File logFile = new File(executionDirectory, STD_OUT_LOG_FILE);
         if (logFile.exists() && !logFile.delete())
             throw new ProcessingError("Could not delete log file: " + logFile.getPath());
         try {
             System.out.println("Creating file: " + logFile.getPath());
             if (!logFile.createNewFile())
                 throw new ProcessingError("Could not create log file: " + logFile.getPath());
-        } catch (final IOException ioex) {
+        } catch (IOException ioex) {
             throw new ProcessingError(ioex);
         }
         processBuilder.redirectErrorStream(true);
@@ -83,18 +84,23 @@ public class TeXCommand extends TeXPriorityTask {
         try {
             for (int i = 0; i < passes; ++i) {
                 System.out.println("Launching process #" + i);
-                final Process process = processBuilder.start();
-                final int exitValue = process.waitFor();
+                Process process = processBuilder.start();
+                int exitValue = process.waitFor();
                 System.out.println(exitValue);
             }
-        } catch (final IOException ioex) {
+        } catch (IOException ioex) {
             System.out.println("IOException while processing TeX file");
             throw new ProcessingError(ioex);
-        } catch (final InterruptedException intex) {
+        } catch (InterruptedException intex) {
             throw new ProcessingError(intex); // TODO: must be integrated into thread management later
         }
 
-        final String logFileContent = Files.read(logFile);
+        String logFileContent;
+        try {
+            logFileContent = Files.readString(logFile.toPath());
+        } catch (IOException ioex) {
+            throw new ProcessingError(ioex);
+        }
         if (containsErrors(logFileContent)) {
             if (errorProcessor != null)
                 errorProcessor.processCompilationErrors(logFileContent);
@@ -104,8 +110,9 @@ public class TeXCommand extends TeXPriorityTask {
         passes = 0;
     }
 
-    private boolean containsErrors(final String logFileContent) {
+    private boolean containsErrors(String logFileContent) {
         return Arrays.stream(logFileContent.split("\n"))
                 .anyMatch(line -> (line.startsWith("!") || line.startsWith("quiting: ")));
     }
+
 }

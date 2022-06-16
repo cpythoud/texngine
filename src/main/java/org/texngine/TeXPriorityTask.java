@@ -19,7 +19,7 @@ public abstract class TeXPriorityTask implements Runnable, Comparable<TeXPriorit
     }
 
     @Override
-    public int compareTo(final TeXPriorityTask task) {
+    public int compareTo(TeXPriorityTask task) {
         int result = Long.compare(priority, task.priority);
 
         if (result == 0)
@@ -27,4 +27,5 @@ public abstract class TeXPriorityTask implements Runnable, Comparable<TeXPriorit
 
         return result;
     }
+
 }

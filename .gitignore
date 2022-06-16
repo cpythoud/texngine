@@ -1,5 +1,5 @@
 .idea/
 TeXngine.iml
-build/
 javadoc/
 src-ascii/
+target/

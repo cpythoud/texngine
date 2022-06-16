@@ -4,4 +4,5 @@ package org.texngine;
 public interface PostProcessor {
 
     void doPostProcessing();
+
 }
