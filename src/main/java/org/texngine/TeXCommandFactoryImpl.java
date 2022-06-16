@@ -8,7 +8,13 @@ public class TeXCommandFactoryImpl implements TeXCommandFactory {
 
     private final List<String> commandAndarguments = new ArrayList<>();
 
+    private final TeXngine texngine;
+
     private long priority = 0;
+
+    public TeXCommandFactoryImpl(TeXngine texngine) {
+        this.texngine = texngine;
+    }
 
     @Override
     public TeXCommandFactory setCommandAndArguments(String... commandAndarguments) {
@@ -34,7 +40,7 @@ public class TeXCommandFactoryImpl implements TeXCommandFactory {
     }
 
     @Override
-    public TeXCommand create(TeXngineImpl texngine) {
+    public TeXCommand create() {
         TeXCommandImpl teXCommand = new TeXCommandImpl(texngine, commandAndarguments);
         teXCommand.setPriority(priority);
         return teXCommand;

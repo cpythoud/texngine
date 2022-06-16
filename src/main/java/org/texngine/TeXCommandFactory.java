@@ -10,6 +10,6 @@ public interface TeXCommandFactory {
 
     TeXCommandFactory setPriority(long priority);
 
-    TeXCommand create(TeXngineImpl texngine);
+    TeXCommand create();
 
 }
