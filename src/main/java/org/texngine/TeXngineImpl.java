@@ -12,21 +12,18 @@ public class TeXngineImpl implements TeXngine {
     public static final String NON_STOP_MODE_OPTION = "-interaction=nonstopmode";
     public static final String BATCH_MODE_OPTION    = "-interaction=batchmode";
 
-    private final File baseDir;
     private final ExecutorService executor;
 
     private boolean debug = false;
 
-    public TeXngineImpl(String baseDirPath, int threadCount) {
+    protected TeXngineImpl(int threadCount) {
         if (threadCount < 1)
             throw new IllegalArgumentException("There must be at least one thread available. Illegal value: " + threadCount);
 
-        baseDir = new File(baseDirPath);
         executor = new ThreadPoolExecutor(1, threadCount, 1, TimeUnit.SECONDS, new PriorityBlockingQueue<>());
     }
 
-    public TeXngineImpl(String baseDirPath, ExecutorService executor) {
-        baseDir = new File(baseDirPath);
+    protected TeXngineImpl(ExecutorService executor) {
         this.executor = executor;
     }
 
@@ -43,14 +40,6 @@ public class TeXngineImpl implements TeXngine {
 
     public void shutdown() {
         executor.shutdown();
-    }
-
-    public File getBaseDir() {
-        return baseDir;
-    }
-
-    public TeXCommandFactory getCommandFactory() {
-        return new TeXCommandFactoryImpl();
     }
 
 }

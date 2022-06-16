@@ -1,7 +1,5 @@
 package org.texngine;
 
-import org.beanmaker.v2.util.Strings;
-
 import java.io.File;
 import java.io.IOException;
 
@@ -24,28 +22,28 @@ public class TeXCommandImpl extends TeXPriorityTask implements TeXCommand {
     }
 
     private int passes = 0;
-    private String subDirectory;
+    private String dir;
     private PreProcessor preProcessor;
     private PostProcessor postProcessor;
     private ErrorProcessor errorProcessor;
 
-    public void execute(String subDirectory) {
-        execute(1, subDirectory, null, null, null);
+    public void execute(String dir) {
+        execute(1, dir, null, null, null);
     }
 
-    public void execute(int passes, String subDirectory) {
-        execute(passes, subDirectory, null, null, null);
+    public void execute(int passes, String dir) {
+        execute(passes, dir, null, null, null);
     }
 
     public void execute(
             int passes,
-            String subDirectory,
+            String dir,
             PreProcessor preProcessor,
             PostProcessor postProcessor,
             ErrorProcessor errorProcessor)
     {
         this.passes = passes;
-        this.subDirectory = subDirectory;
+        this.dir = dir;
         this.preProcessor = preProcessor;
         this.postProcessor = postProcessor;
         this.errorProcessor = errorProcessor;
@@ -62,17 +60,18 @@ public class TeXCommandImpl extends TeXPriorityTask implements TeXCommand {
             preProcessor.doPreProcessing();
 
         ProcessBuilder processBuilder = new ProcessBuilder(commandAndarguments);
-        System.out.println("Arguments: " + Strings.concatWithSeparator(" ", commandAndarguments));
+        //System.out.println("Arguments: " + Strings.concatWithSeparator(" ", commandAndarguments));
+        // TODO: various commented System.out.println() must make their way into a log file
 
-        File executionDirectory = new File(teXngine.getBaseDir(), subDirectory);
-        System.out.println("Execution directory: " + executionDirectory.getPath());
+        File executionDirectory = new File(dir);
+        //System.out.println("Execution directory: " + executionDirectory.getPath());
         processBuilder.directory(executionDirectory);
 
         File logFile = new File(executionDirectory, STD_OUT_LOG_FILE);
         if (logFile.exists() && !logFile.delete())
             throw new ProcessingError("Could not delete log file: " + logFile.getPath());
         try {
-            System.out.println("Creating file: " + logFile.getPath());
+            //System.out.println("Creating file: " + logFile.getPath());
             if (!logFile.createNewFile())
                 throw new ProcessingError("Could not create log file: " + logFile.getPath());
         } catch (IOException ioex) {
@@ -83,13 +82,13 @@ public class TeXCommandImpl extends TeXPriorityTask implements TeXCommand {
 
         try {
             for (int i = 0; i < passes; ++i) {
-                System.out.println("Launching process #" + i);
+                //System.out.println("Launching process #" + i);
                 Process process = processBuilder.start();
                 int exitValue = process.waitFor();
-                System.out.println(exitValue);
+                //System.out.println(exitValue);
             }
         } catch (IOException ioex) {
-            System.out.println("IOException while processing TeX file");
+            //System.out.println("IOException while processing TeX file");
             throw new ProcessingError(ioex);
         } catch (InterruptedException intex) {
             throw new ProcessingError(intex); // TODO: must be integrated into thread management later

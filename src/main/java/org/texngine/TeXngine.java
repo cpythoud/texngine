@@ -1,8 +1,16 @@
 package org.texngine;
 
-import java.io.File;
+import java.util.concurrent.ExecutorService;
 
 public interface TeXngine {
+
+    static TeXngine create(int threadCount) {
+        return new TeXngineImpl(threadCount);
+    }
+
+    static TeXngine create(ExecutorService executor) {
+        return new TeXngineImpl(executor);
+    }
 
     void setDebug(boolean debug);
 
@@ -10,8 +18,8 @@ public interface TeXngine {
 
     void shutdown();
 
-    File getBaseDir();
-
-    TeXCommandFactory getCommandFactory();
+    default TeXCommandFactory getCommandFactory() {
+        return new TeXCommandFactoryImpl();
+    }
 
 }
