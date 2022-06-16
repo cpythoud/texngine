@@ -2,11 +2,11 @@ package org.texngine;
 
 public class ProcessingError extends RuntimeException {
 
-    public ProcessingError(final String message) {
+    public ProcessingError(String message) {
         super(message);
     }
 
-    public ProcessingError(final Throwable throwable) {
+    public ProcessingError(Throwable throwable) {
         super(throwable);
     }
 

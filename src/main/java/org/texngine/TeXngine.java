@@ -2,100 +2,16 @@ package org.texngine;
 
 import java.io.File;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+public interface TeXngine {
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.PriorityBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+    void setDebug(boolean debug);
 
-public class TeXngine {
+    void execute(TeXCommandImpl texCommand);
 
-    public static final String NON_STOP_MODE_OPTION = "-interaction=nonstopmode";
-    public static final String BATCH_MODE_OPTION    = "-interaction=batchmode";
+    void shutdown();
 
-    private final File baseDir;
-    private final ExecutorService executor;
+    File getBaseDir();
 
-    private boolean debug = false;
-
-    public TeXngine(String baseDirPath, int threadCount) {
-        if (threadCount < 1)
-            throw new IllegalArgumentException("There must be at least one thread available. Illegal value: " + threadCount);
-
-        baseDir = new File(baseDirPath);
-        executor = new ThreadPoolExecutor(1, threadCount, 1, TimeUnit.SECONDS, new PriorityBlockingQueue<>());
-    }
-
-    public TeXngine(String baseDirPath, ExecutorService executor) {
-        baseDir = new File(baseDirPath);
-        this.executor = executor;
-    }
-
-    public void setDebug(boolean debug) {
-        this.debug = debug;
-    }
-
-    public void execute(TeXCommand texCommand) {
-        if (debug)
-            texCommand.run();
-        else
-            executor.execute(texCommand);
-    }
-
-    public void shutdown() {
-        executor.shutdown();
-    }
-
-    @Override
-    public void finalize() {
-        if (!executor.isShutdown())
-            executor.shutdownNow();
-    }
-
-    public File getBaseDir() {
-        return baseDir;
-    }
-
-    public CommandFactory getCommandFactory() {
-        return new CommandFactory();
-    }
-
-    public class CommandFactory {
-
-        private final List<String> commandAndarguments = new ArrayList<>();
-
-        private long priority = 0;
-
-        private CommandFactory() { }
-
-        public CommandFactory setCommandAndarguments(String... commandAndarguments) {
-            this.commandAndarguments.clear();
-            this.commandAndarguments.addAll(Arrays.asList(commandAndarguments));
-
-            return this;
-        }
-
-        public CommandFactory setCommandAndarguments(List<String> commandAndarguments) {
-            this.commandAndarguments.clear();
-            this.commandAndarguments.addAll(commandAndarguments);
-
-            return this;
-        }
-
-        public CommandFactory setPriority(long priority) {
-            this.priority = priority;
-
-            return this;
-        }
-
-        public TeXCommand create() {
-            TeXCommand teXCommand = new TeXCommand(TeXngine.this, commandAndarguments);
-            teXCommand.setPriority(priority);
-            return teXCommand;
-        }
-    }
+    TeXCommandFactory getCommandFactory();
 
 }
