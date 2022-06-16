@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import java.nio.file.Files;
+import java.nio.file.Path;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,22 +23,22 @@ public class TeXCommandImpl extends TeXPriorityTask implements TeXCommand {
     }
 
     private int passes = 0;
-    private String dir;
+    private Path dir;
     private PreProcessor preProcessor;
     private PostProcessor postProcessor;
     private ErrorProcessor errorProcessor;
 
-    public void execute(String dir) {
+    public void execute(Path dir) {
         execute(1, dir, null, null, null);
     }
 
-    public void execute(int passes, String dir) {
+    public void execute(int passes, Path dir) {
         execute(passes, dir, null, null, null);
     }
 
     public void execute(
             int passes,
-            String dir,
+            Path dir,
             PreProcessor preProcessor,
             PostProcessor postProcessor,
             ErrorProcessor errorProcessor)
@@ -63,7 +64,7 @@ public class TeXCommandImpl extends TeXPriorityTask implements TeXCommand {
         //System.out.println("Arguments: " + Strings.concatWithSeparator(" ", commandAndarguments));
         // TODO: various commented System.out.println() must make their way into a log file
 
-        File executionDirectory = new File(dir);
+        File executionDirectory = dir.toFile();
         //System.out.println("Execution directory: " + executionDirectory.getPath());
         processBuilder.directory(executionDirectory);
 
