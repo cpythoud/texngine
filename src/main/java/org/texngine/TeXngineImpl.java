@@ -26,7 +26,7 @@ public class TeXngineImpl implements TeXngine {
         this.debug = debug;
     }
 
-    public void execute(TeXCommandImpl texCommand) {
+    public void execute(TeXCommand texCommand) {
         if (debug)
             texCommand.run();
         else

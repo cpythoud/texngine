@@ -17,7 +17,7 @@ public interface TeXngine {
 
     void setDebug(boolean debug);
 
-    void execute(TeXCommandImpl texCommand);
+    void execute(TeXCommand texCommand);
 
     void shutdown();
 

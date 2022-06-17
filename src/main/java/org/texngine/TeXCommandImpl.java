@@ -15,11 +15,11 @@ public class TeXCommandImpl extends TeXPriorityTask implements TeXCommand {
     private static final String STD_OUT_LOG_FILE = "texngine.log";
 
     private final TeXngine teXngine;
-    private final List<String> commandAndarguments = new ArrayList<>();
+    private final List<String> commandAndArguments = new ArrayList<>();
 
-    TeXCommandImpl(TeXngine teXngine, List<String> commandAndarguments) {
+    TeXCommandImpl(TeXngine teXngine, List<String> commandAndArguments) {
         this.teXngine = teXngine;
-        this.commandAndarguments.addAll(commandAndarguments);
+        this.commandAndArguments.addAll(commandAndArguments);
     }
 
     private int passes = 0;
@@ -43,6 +43,9 @@ public class TeXCommandImpl extends TeXPriorityTask implements TeXCommand {
             PostProcessor postProcessor,
             ErrorProcessor errorProcessor)
     {
+        if (passes < 1 || passes > 10)
+            throw new IllegalArgumentException("Illegal number of passes requested. Must be between 1 and 10. Requested: " + passes);
+
         this.passes = passes;
         this.dir = dir;
         this.preProcessor = preProcessor;
@@ -54,13 +57,10 @@ public class TeXCommandImpl extends TeXPriorityTask implements TeXCommand {
 
     @Override
     public void run() {
-        if (passes == 0)
-            throw new IllegalStateException("Command has not been passed any parameter");
-
         if (preProcessor != null)
             preProcessor.doPreProcessing();
 
-        ProcessBuilder processBuilder = new ProcessBuilder(commandAndarguments);
+        ProcessBuilder processBuilder = new ProcessBuilder(commandAndArguments);
         //System.out.println("Arguments: " + Strings.concatWithSeparator(" ", commandAndarguments));
         // TODO: various commented System.out.println() must make their way into a log file
 
@@ -107,7 +107,7 @@ public class TeXCommandImpl extends TeXPriorityTask implements TeXCommand {
         } else if (postProcessor != null)
             postProcessor.doPostProcessing();
 
-        passes = 0;
+        //passes = 0;  // ! what was this about ?
     }
 
     private boolean containsErrors(String logFileContent) {
