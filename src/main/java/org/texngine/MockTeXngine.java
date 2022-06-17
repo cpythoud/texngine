@@ -5,7 +5,15 @@ import org.beanmaker.v2.util.logging.SoutLogger;
 
 public class MockTeXngine implements TeXngine {
 
-    private Logger logger = new SoutLogger();
+    private final Logger logger;
+
+    public MockTeXngine() {
+        this(new SoutLogger());
+    }
+
+    public MockTeXngine(Logger logger) {
+        this.logger = logger;
+    }
 
     @Override
     public void setDebug(boolean debug) {
@@ -25,10 +33,6 @@ public class MockTeXngine implements TeXngine {
     @Override
     public TeXCommandFactory getCommandFactory() {
         return new MockTeXCommandFactory(this, logger);
-    }
-
-    public void replaceLogger(Logger logger) {
-        this.logger = logger;
     }
 
 }

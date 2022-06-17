@@ -1,5 +1,7 @@
 package org.texngine;
 
+import org.beanmaker.v2.util.logging.Logger;
+
 import java.util.concurrent.ExecutorService;
 
 public interface TeXngine {
@@ -13,6 +15,14 @@ public interface TeXngine {
 
     static TeXngine create(ExecutorService executor) {
         return new DefaultTeXngine(executor);
+    }
+
+    static TeXngine mock() {
+        return new MockTeXngine();
+    }
+
+    static TeXngine mock(Logger logger) {
+        return new MockTeXngine(logger);
     }
 
     void setDebug(boolean debug);
