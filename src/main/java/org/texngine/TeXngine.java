@@ -8,11 +8,11 @@ public interface TeXngine {
     String BATCH_MODE_OPTION    = "-interaction=batchmode";
 
     static TeXngine create(int threadCount) {
-        return new TeXngineImpl(threadCount);
+        return new DefaultTeXngine(threadCount);
     }
 
     static TeXngine create(ExecutorService executor) {
-        return new TeXngineImpl(executor);
+        return new DefaultTeXngine(executor);
     }
 
     void setDebug(boolean debug);
@@ -22,7 +22,7 @@ public interface TeXngine {
     void shutdown();
 
     default TeXCommandFactory getCommandFactory() {
-        return new TeXCommandFactoryImpl(this);
+        return new DefaultTeXCommandFactory(this);
     }
 
 }

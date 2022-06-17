@@ -10,14 +10,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class TeXCommandImpl extends TeXPriorityTask implements TeXCommand {
+public class DefaultTeXCommand extends TeXPriorityTask implements TeXCommand {
 
     private static final String STD_OUT_LOG_FILE = "texngine.log";
 
     private final TeXngine teXngine;
     private final List<String> commandAndArguments = new ArrayList<>();
 
-    TeXCommandImpl(TeXngine teXngine, List<String> commandAndArguments) {
+    DefaultTeXCommand(TeXngine teXngine, List<String> commandAndArguments) {
         this.teXngine = teXngine;
         this.commandAndArguments.addAll(commandAndArguments);
     }

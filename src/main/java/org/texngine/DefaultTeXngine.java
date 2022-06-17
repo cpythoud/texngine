@@ -5,20 +5,20 @@ import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-public class TeXngineImpl implements TeXngine {
+public class DefaultTeXngine implements TeXngine {
 
     private final ExecutorService executor;
 
     private boolean debug = false;
 
-    protected TeXngineImpl(int threadCount) {
+    protected DefaultTeXngine(int threadCount) {
         if (threadCount < 1)
             throw new IllegalArgumentException("There must be at least one thread available. Illegal value: " + threadCount);
 
         executor = new ThreadPoolExecutor(1, threadCount, 1, TimeUnit.SECONDS, new PriorityBlockingQueue<>());
     }
 
-    protected TeXngineImpl(ExecutorService executor) {
+    protected DefaultTeXngine(ExecutorService executor) {
         this.executor = executor;
     }
 

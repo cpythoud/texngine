@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class TeXCommandFactoryImpl implements TeXCommandFactory {
+public class DefaultTeXCommandFactory implements TeXCommandFactory {
 
     private final List<String> commandAndArguments = new ArrayList<>();
 
@@ -12,7 +12,7 @@ public class TeXCommandFactoryImpl implements TeXCommandFactory {
 
     private long priority = 0;
 
-    public TeXCommandFactoryImpl(TeXngine texngine) {
+    public DefaultTeXCommandFactory(TeXngine texngine) {
         this.texngine = texngine;
     }
 
@@ -41,7 +41,7 @@ public class TeXCommandFactoryImpl implements TeXCommandFactory {
 
     @Override
     public TeXCommand create() {
-        TeXCommandImpl teXCommand = new TeXCommandImpl(texngine, commandAndArguments);
+        DefaultTeXCommand teXCommand = new DefaultTeXCommand(texngine, commandAndArguments);
         teXCommand.setPriority(priority);
         return teXCommand;
     }
