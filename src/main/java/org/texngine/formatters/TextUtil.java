@@ -39,8 +39,8 @@ public class TextUtil {
         ESCAPE_CHARS.put("_", "\\_");
         ESCAPE_CHARS.put("{", "\\{");
         ESCAPE_CHARS.put("}", "\\}");
-        ESCAPE_CHARS.put("~", "\\textasciitilde");
-        ESCAPE_CHARS.put("^", "\\textasciicircum");
+        ESCAPE_CHARS.put("~", "{\\textasciitilde}");
+        ESCAPE_CHARS.put("^", "{\\textasciicircum}");
     }
 
     public static String escapeChars(String source) {
