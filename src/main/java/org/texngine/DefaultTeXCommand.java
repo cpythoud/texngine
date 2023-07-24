@@ -1,5 +1,7 @@
 package org.texngine;
 
+//import org.beanmaker.v2.util.Strings;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -61,7 +63,7 @@ public class DefaultTeXCommand extends TeXPriorityTask implements TeXCommand {
             preProcessor.doPreProcessing();
 
         ProcessBuilder processBuilder = new ProcessBuilder(commandAndArguments);
-        //System.out.println("Arguments: " + Strings.concatWithSeparator(" ", commandAndarguments));
+        //System.out.println("Arguments: " + Strings.concatWithSeparator(" ", commandAndArguments));
         // TODO: various commented System.out.println() must make their way into a log file
 
         File executionDirectory = dir.toFile();
