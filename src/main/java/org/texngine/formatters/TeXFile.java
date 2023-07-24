@@ -5,6 +5,7 @@ import org.beanmaker.v2.util.Files;
 import java.io.File;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class TeXFile {
@@ -68,6 +69,18 @@ public class TeXFile {
 
     public void writeEmptyFile() {
         Files.createEmptyFile(new File(filepath));
+        fileWritten = true;
+    }
+
+    public String getFilepath() {
+        return filepath;
+    }
+
+    public List<String> getLines() {
+        return Collections.unmodifiableList(lines);
+    }
+
+    protected void markAsWritten() {
         fileWritten = true;
     }
 
