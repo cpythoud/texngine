@@ -1,14 +1,14 @@
 package org.texngine;
 
-import org.beanmaker.v2.util.logging.Logger;
-import org.beanmaker.v2.util.logging.SoutLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MockTeXngine implements TeXngine {
 
     private final Logger logger;
 
     public MockTeXngine() {
-        this(new SoutLogger());
+        this(LoggerFactory.getLogger(MockTeXngine.class));
     }
 
     public MockTeXngine(Logger logger) {

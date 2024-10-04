@@ -34,4 +34,6 @@ public interface TeXCommand extends Runnable {
             ErrorProcessor errorProcessor
     );
 
+    String printCommand();
+
 }

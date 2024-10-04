@@ -1,6 +1,6 @@
 package org.texngine;
 
-import org.beanmaker.v2.util.logging.Logger;
+import org.slf4j.Logger;
 
 import java.util.concurrent.ExecutorService;
 

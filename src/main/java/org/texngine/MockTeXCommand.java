@@ -1,7 +1,8 @@
 package org.texngine;
 
 import org.beanmaker.v2.util.Strings;
-import org.beanmaker.v2.util.logging.Logger;
+
+import org.slf4j.Logger;
 
 import java.nio.file.Path;
 
@@ -61,7 +62,7 @@ public class MockTeXCommand implements TeXCommand {
 
     @Override
     public void run() {
-        logger.info("Running TeX Command (" + passes + " times): " + Strings.concatWithSeparator(" ", commandAndArguments)
+        logger.info("Running TeX Command (" + passes + " times): " + printCommand()
                 + " [in directory: " + dir.toFile().getAbsolutePath() + "]");
         logger.info("MockTeXCommand: nothing happens; processors will be invoked if not null");
 
@@ -79,6 +80,16 @@ public class MockTeXCommand implements TeXCommand {
             logger.info("Executing error processor " + errorProcessor.getClass().getCanonicalName());
             errorProcessor.processCompilationErrors("logfile content");
         }
+    }
+
+    @Override
+    public String printCommand() {
+        return Strings.concatWithSeparator(" ", commandAndArguments);
+    }
+
+    @Override
+    public String toString() {
+        return "[" + printCommand() + "] in directory: " + dir.toFile().getAbsolutePath();
     }
 
 }

@@ -1,11 +1,16 @@
 package org.texngine;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 public class DefaultTeXngine implements TeXngine {
+
+    protected final Logger logger = LoggerFactory.getLogger(DefaultTeXngine.class);
 
     private final ExecutorService executor;
 
@@ -23,17 +28,22 @@ public class DefaultTeXngine implements TeXngine {
     }
 
     public void setDebug(boolean debug) {
+        logger.trace("setDebug({}}) called", debug);
         this.debug = debug;
     }
 
     public void execute(TeXCommand texCommand) {
-        if (debug)
+        if (debug) {
+            logger.info("Executing directly (debug mode) command: {}", texCommand);
             texCommand.run();
-        else
+        } else {
+            logger.info("Forking command: {}", texCommand);
             executor.execute(texCommand);
+        }
     }
 
     public void shutdown() {
+        logger.info("TeXngine shutdown.");
         executor.shutdown();
     }
 

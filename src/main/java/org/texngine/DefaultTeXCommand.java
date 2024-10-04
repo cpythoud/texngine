@@ -1,6 +1,9 @@
 package org.texngine;
 
-//import org.beanmaker.v2.util.Strings;
+import org.beanmaker.v2.util.Strings;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,6 +18,8 @@ import java.util.List;
 public class DefaultTeXCommand extends TeXPriorityTask implements TeXCommand {
 
     private static final String STD_OUT_LOG_FILE = "texngine.log";
+
+    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final TeXngine teXngine;
     private final List<String> commandAndArguments = new ArrayList<>();
@@ -63,18 +68,17 @@ public class DefaultTeXCommand extends TeXPriorityTask implements TeXCommand {
             preProcessor.doPreProcessing();
 
         ProcessBuilder processBuilder = new ProcessBuilder(commandAndArguments);
-        //System.out.println("Arguments: " + Strings.concatWithSeparator(" ", commandAndArguments));
-        // TODO: various commented System.out.println() must make their way into a log file
+        logger.trace("Arguments: {}", printCommand());
 
         File executionDirectory = dir.toFile();
-        //System.out.println("Execution directory: " + executionDirectory.getPath());
+        logger.trace("Execution directory: {}", executionDirectory);
         processBuilder.directory(executionDirectory);
 
         File logFile = new File(executionDirectory, STD_OUT_LOG_FILE);
         if (logFile.exists() && !logFile.delete())
             throw new ProcessingError("Could not delete log file: " + logFile.getPath());
         try {
-            //System.out.println("Creating file: " + logFile.getPath());
+            logger.debug("Creating file: {}", logFile);
             if (!logFile.createNewFile())
                 throw new ProcessingError("Could not create log file: " + logFile.getPath());
         } catch (IOException ioex) {
@@ -85,36 +89,47 @@ public class DefaultTeXCommand extends TeXPriorityTask implements TeXCommand {
 
         try {
             for (int i = 0; i < passes; ++i) {
-                //System.out.println("Launching process #" + i);
+                logger.debug("Launching process #{} for command: {}", i, this);
                 Process process = processBuilder.start();
                 int exitValue = process.waitFor();
-                //System.out.println(exitValue);
+                logger.debug("Process finished with exit value {} for command: {}", exitValue, this);
             }
         } catch (IOException ioex) {
-            //System.out.println("IOException while processing TeX file");
+            logger.error("IOException while processing TeX files", ioex);
             throw new ProcessingError(ioex);
         } catch (InterruptedException intex) {
-            throw new ProcessingError(intex); // TODO: must be integrated into thread management later
+            logger.error("InterruptedException while processing TeX files", intex);
+            throw new ProcessingError(intex); // TODO: must be integrated into thread management
         }
 
         String logFileContent;
         try {
             logFileContent = Files.readString(logFile.toPath());
         } catch (IOException ioex) {
+            logger.error("IOException while reading log file", ioex);
             throw new ProcessingError(ioex);
         }
         if (containsErrors(logFileContent)) {
+
             if (errorProcessor != null)
                 errorProcessor.processCompilationErrors(logFileContent);
         } else if (postProcessor != null)
             postProcessor.doPostProcessing();
-
-        //passes = 0;  // ! what was this about ?
     }
 
     private boolean containsErrors(String logFileContent) {
         return Arrays.stream(logFileContent.split("\n"))
                 .anyMatch(line -> (line.startsWith("!") || line.startsWith("quiting: ")));
+    }
+
+    @Override
+    public String printCommand() {
+        return Strings.concatWithSeparator(" ", commandAndArguments);
+    }
+
+    @Override
+    public String toString() {
+        return "[" + printCommand() + "] in directory: " + dir.toFile().getAbsolutePath();
     }
 
 }
